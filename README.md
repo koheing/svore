@@ -7,7 +7,7 @@ This store is type safe.
 ## Installation
 
 ```sh
-npm i composition-svore
+npm i svore
 ```
 
 ## Usage
