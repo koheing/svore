@@ -35,5 +35,13 @@
     "lib/*",
     "LICENSE",
     "README.md"
-  ]
+  ],
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/koheing/svore"
+  },
+  "homepage": "https://github.com/koheing/svore#readme",
+  "bugs": {
+    "url": "https://github.com/koheing/svore/issues"
+  }
 }
