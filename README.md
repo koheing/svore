@@ -1,8 +1,11 @@
 # svore
 
 This library makes it easy to manage the stores created by composition-api because you can easily describe the process of linking between stores.  
-It is useful if you use realtime-update service such as firestore.  
-This store is type safe.
+This store is type safe.  
+
+It is useful if 
+- you use realtime-update service such as firestore.  
+- make stores decoupled.
 
 ## Installation
 
@@ -149,7 +152,7 @@ function todoStore() {
 ![example](https://user-images.githubusercontent.com/55611095/123497694-e792cd80-d669-11eb-88d5-90bcb10e4034.gif)
 
 ## TODO
-
+- [ ] Getter
 - [ ] Test
 - [ ] Description of merit
 - [ ] esm support
