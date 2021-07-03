@@ -3,7 +3,7 @@ import { subscribeTodos } from '../services/todo.service'
 
 export type TodoStore = ReturnType<typeof createTodoStore>
 export const createTodoStore = () => {
-  const state = reactive<{ todos: any[], unsubscribe: (() => void) | null  }>({
+  const state = reactive<{ todos: any[]; unsubscribe: (() => void) | null }>({
     todos: [],
     unsubscribe: null,
   })
@@ -42,6 +42,6 @@ export const createTodoStore = () => {
   return {
     todos,
     subscribe,
-    reset
+    reset,
   }
 }

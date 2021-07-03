@@ -1,10 +1,10 @@
 <template>
-    <h1>SignIn</h1>
-    <div class="form">
-      <input v-model="email" placeholder="email">
-      <input v-model="password" placeholder="password">
-      <button :disabled="invalid" @click="signIn">Sign In</button>
-    </div>
+  <h1>SignIn</h1>
+  <div class="form">
+    <input v-model="email" placeholder="email" />
+    <input v-model="password" placeholder="password" />
+    <button :disabled="invalid" @click="signIn">Sign In</button>
+  </div>
 </template>
 
 <script lang="ts">
@@ -19,13 +19,13 @@ export default defineComponent({
     const store = inject<State<AuthStore>>('Store', 'module', 'authStore') as State<AuthStore>
     const router = useRouter()
     const unwatch = watch(store.userId, (userId) => {
-      if (userId === '') return 
+      if (userId === '') return
       router.push('/todos')
     })
-    
+
     const state = reactive({
       password: '',
-      email: ''
+      email: '',
     })
 
     const invalid = computed(() => state.password === '' || state.email === '')
@@ -39,21 +39,21 @@ export default defineComponent({
     return {
       ...toRefs(state),
       invalid,
-      signIn
+      signIn,
     }
-  }
+  },
 })
 </script>
 
 <style scoped>
-  .form {
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-  }
+.form {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
 
-  input {
-    margin: 1rem 0;
-  }
+input {
+  margin: 1rem 0;
+}
 </style>

@@ -6,6 +6,6 @@ export default createRouter({
   history: createWebHashHistory(),
   routes: [
     { path: '/', component: SignIn },
-    { path: '/todos', component: Todos }
-  ]
+    { path: '/todos', component: Todos },
+  ],
 })
