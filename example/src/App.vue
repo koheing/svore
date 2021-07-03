@@ -11,8 +11,8 @@ import Store from './stores/Store.vue'
 export default defineComponent({
   name: 'App',
   components: {
-    Store
-  }
+    Store,
+  },
 })
 </script>
 

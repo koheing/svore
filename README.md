@@ -152,7 +152,6 @@ function todoStore() {
 ![example](https://user-images.githubusercontent.com/55611095/123497694-e792cd80-d669-11eb-88d5-90bcb10e4034.gif)
 
 ## TODO
-- [ ] Getter
 - [ ] Test
 - [ ] Description of merit
 - [ ] esm support

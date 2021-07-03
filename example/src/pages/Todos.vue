@@ -18,8 +18,8 @@ export default defineComponent({
     const store = inject<State<TodoStore>>('Store', 'module', 'todoStore') as State<TodoStore>
 
     return {
-      todos: store.todos
+      todos: store.todos,
     }
-  }
+  },
 })
 </script>

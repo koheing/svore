@@ -1,5 +1,5 @@
 <template>
-   <slot />
+  <slot />
 </template>
 
 <script lang="ts">
@@ -17,11 +17,10 @@ export default defineComponent({
       .trigger((it) => (userId, _, cleanUp) => cleanUp(it.todoStore.subscribe(userId)))
 
     store
-      .on(({ getters }) => getters.value.signedIn)
-      .watch((newer, older) => console.log('SignIn State', 'before:', older, 'after:', newer))
-
+      .on(({ getters }) => getters)
+      .watch((newer, older) => console.log('getters', 'before:', older, 'after:', newer))
 
     provide('Store', store)
-  }
+  },
 })
 </script>

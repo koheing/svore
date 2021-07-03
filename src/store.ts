@@ -175,7 +175,10 @@ export function defineStore<T extends Record<string, Module>, S = undefined>(
      *    ```
      */
     on,
-    unwatchAll
+    unwatchAll,
+    get getters() {
+      return _getters
+    },
   }
 }
 

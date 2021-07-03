@@ -104,6 +104,7 @@ export declare function defineStore<T extends Record<string, Module>, S = undefi
         watch: (effect: WatchCallback<Unref<U>, Unref<U> | undefined>, options?: WatchOptions<boolean> | undefined) => void;
     };
     unwatchAll: () => void;
+    readonly getters: S extends undefined ? never : ComputedRef<S>;
 };
 /**
  * Like vue's inject.
