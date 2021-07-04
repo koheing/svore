@@ -8,15 +8,14 @@
 </template>
 
 <script lang="ts">
-import { inject, State } from 'svore'
+import { inject } from 'svore'
 import { computed, defineComponent, onUnmounted, reactive, toRefs, watch } from 'vue'
-import { signInWithEmailAndPassword } from '../services/auth.service'
 import { AuthStore } from '../stores/auth.store'
 import { useRouter } from 'vue-router'
 export default defineComponent({
   name: 'SignIn',
   setup() {
-    const store = inject<State<AuthStore>>('Store', 'module', 'authStore') as State<AuthStore>
+    const store = inject<AuthStore>('Store', 'module', 'authStore') as AuthStore
     const router = useRouter()
     const unwatch = watch(store.userId, (userId) => {
       if (userId === '') return
@@ -31,7 +30,7 @@ export default defineComponent({
     const invalid = computed(() => state.password === '' || state.email === '')
 
     const signIn = async () => {
-      await signInWithEmailAndPassword(state.email, state.password)
+      await store.signInWithEmailAndPassword(state.email, state.password)
     }
 
     onUnmounted(() => unwatch)

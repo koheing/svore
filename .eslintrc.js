@@ -1,7 +1,6 @@
 module.exports = {
   root: true,
-  extends: ['eslint:recommended', 'prettier'],
-  parser: '@babel/eslint-parser',
+  parser: '@typescript-eslint/parser',
   env: {
     browser: true,
     node: true,
@@ -10,5 +9,19 @@ module.exports = {
     sourceType: 'module',
     ecmaVersion: 2017,
   },
-  plugins: ['jest'],
+  plugins: [
+    'jest',
+    '@typescript-eslint',
+    'prettier',
+    'vue'
+  ],
+  extends: [
+    'eslint:recommended',
+    'plugin:vue/vue3-recommended',
+    'plugin:prettier/recommended',
+    'plugin:@typescript-eslint/recommended'
+  ],
+  rules: {
+    '@typescript-eslint/explicit-module-boundary-types': 'off'
+  }
 }
