@@ -7,7 +7,7 @@
   },
   "dependencies": {
     "firebase": "^8.7.0",
-    "svore": "^0.1.2",
+    "svore": "^0.3.0",
     "vue": "^3.0.5",
     "vue-router": "^4.0.10"
   },
