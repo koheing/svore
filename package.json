@@ -1,6 +1,6 @@
 {
   "name": "svore",
-  "version": "0.3.0",
+  "version": "0.3.1",
   "description": "stare management by composition-api",
   "main": "lib/index.js",
   "types": "lib/index.d.ts",
