@@ -61,7 +61,26 @@ export declare function defineStore<T extends Record<string, Module>, S = undefi
          *         cleanUp(unsubscribe)
          *   ```
          */
-        trigger: (action: (modules: T) => WatchCallback<Unref<U>, Unref<U>>, options?: WatchOptions<boolean> | undefined) => void;
+        trigger: (action: (modules: T) => WatchCallback<Unref<U>, Unref<U>>, options?: WatchOptions<boolean> | undefined) => {
+            /**
+             * Trigger other action, like `dispatch` on Vuex
+             * @example
+             *   ```ts
+             *   store
+             *     .on(({ modules: it }) => it.authStore.userId)
+             *     .trigger((it) => it.profileStore.findByUserId)
+             *
+             *   store
+             *     .on(({ getters: it }) => it.userIdAndTeamId)
+             *     .trigger((it) =>
+             *       ([newUserId, newTeamId], _, cleanUp) => {
+             *         if (!newUserId || !newTeamId) return
+             *         const unsubscribe = it.teamStore.subscribe(newUserId, newTeamId)
+             *         cleanUp(unsubscribe)
+             *   ```
+             */
+            trigger: any;
+        };
         /**
          * Filter before trigger
          * @example
@@ -90,7 +109,26 @@ export declare function defineStore<T extends Record<string, Module>, S = undefi
              *         cleanUp(unsubscribe)
              *   ```
              */
-            trigger: (action: (modules: T) => WatchCallback<Unref<U>, Unref<U>>, options?: WatchOptions<boolean> | undefined) => void;
+            trigger: (action: (modules: T) => WatchCallback<Unref<U>, Unref<U>>, options?: WatchOptions<boolean> | undefined) => {
+                /**
+                 * Trigger other action, like `dispatch` on Vuex
+                 * @example
+                 *   ```ts
+                 *   store
+                 *     .on(({ modules: it }) => it.authStore.userId)
+                 *     .trigger((it) => it.profileStore.findByUserId)
+                 *
+                 *   store
+                 *     .on(({ getters: it }) => it.userIdAndTeamId)
+                 *     .trigger((it) =>
+                 *       ([newUserId, newTeamId], _, cleanUp) => {
+                 *         if (!newUserId || !newTeamId) return
+                 *         const unsubscribe = it.teamStore.subscribe(newUserId, newTeamId)
+                 *         cleanUp(unsubscribe)
+                 *   ```
+                 */
+                trigger: any;
+            };
         };
         /**
          * [`watch`](https://github.com/vuejs/vue-next/blob/master/packages/runtime-core/src/apiWatch.ts#L89) function on vue3
@@ -101,7 +139,18 @@ export declare function defineStore<T extends Record<string, Module>, S = undefi
          *    .watch((newId, oldId) => console.log)
          *  ```
          */
-        watch: (effect: WatchCallback<Unref<U>, Unref<U> | undefined>, options?: WatchOptions<boolean> | undefined) => void;
+        watch: (effect: WatchCallback<Unref<U>, Unref<U> | undefined>, options?: WatchOptions<boolean> | undefined) => {
+            /**
+             * [`watch`](https://github.com/vuejs/vue-next/blob/master/packages/runtime-core/src/apiWatch.ts#L89) function on vue3
+             * @example
+             *  ```ts
+             *  store
+             *    .on(({ modules: it }) => it.authStore.userId)
+             *    .watch((newId, oldId) => console.log)
+             *  ```
+             */
+            watch: any;
+        };
     };
     unwatchAll: () => void;
     readonly getters: S extends undefined ? never : ComputedRef<S>;

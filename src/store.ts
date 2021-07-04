@@ -8,7 +8,7 @@ import {
   ComputedRef,
 } from 'vue'
 import { Module, Unref } from './type'
-import { deepCopy } from './util'
+import { copy } from './util'
 
 /**
  * Define store
@@ -36,7 +36,7 @@ export function defineStore<T extends Record<string, Module>, S = undefined>(
   const _store = reactive(modules)
   let _unsubscribes: (() => void)[] = []
   const _getters = (
-    getters ? computed(() => deepCopy(getters(modules))) : undefined
+    getters ? computed(() => copy(getters(modules))) : undefined
   ) as S extends undefined ? never : ComputedRef<S>
 
   function on<U>(
@@ -48,12 +48,13 @@ export function defineStore<T extends Record<string, Module>, S = undefined>(
       getters: S extends undefined ? never : ComputedRef<S>
     }) => U
   ) {
-    let _predicate: ((newer: any, older?: any) => boolean) | null = null
+    let _predicate: ((newer: Unref<U>, older?: Unref<U>) => boolean) | null = null
+
     function trigger(
       action: (modules: T) => WatchCallback<Unref<U>, Unref<U>>,
       options?: WatchOptions
     ) {
-      const target = () => deepCopy(mapper({ modules: _store as T, getters: _getters }))
+      const target = () => copy(mapper({ modules: _store as T, getters: _getters })) as Unref<U>
       const unwatch = w(
         target,
         async (newer, older, cleanUp) => {
@@ -63,10 +64,7 @@ export function defineStore<T extends Record<string, Module>, S = undefined>(
         options
       )
       _unsubscribes.push(unwatch)
-    }
 
-    function filter(predicate: (newer: Unref<U>, older: Unref<U>) => boolean) {
-      _predicate = predicate
       return {
         /**
          * Trigger other action, like `dispatch` on Vuex
@@ -89,17 +87,51 @@ export function defineStore<T extends Record<string, Module>, S = undefined>(
       }
     }
 
-    function watch(
-      effect: WatchCallback<Unref<U>, Unref<U> | undefined>,
-      options?: WatchOptions
-    ): void {
-      const target = () => deepCopy(mapper({ modules: _store as T, getters: _getters }))
+    function filter(predicate: (newer: Unref<U>, older: Unref<U>) => boolean) {
+      _predicate = predicate as (newer: Unref<U>, older?: Unref<U>) => boolean
+      return {
+        /**
+         * Trigger other action, like `dispatch` on Vuex
+         * @example
+         *   ```ts
+         *   store
+         *     .on(({ modules: it }) => it.authStore.userId)
+         *     .trigger((it) => it.profileStore.findByUserId)
+         *
+         *   store
+         *     .on(({ getters: it }) => it.userIdAndTeamId)
+         *     .trigger((it) =>
+         *       ([newUserId, newTeamId], _, cleanUp) => {
+         *         if (!newUserId || !newTeamId) return
+         *         const unsubscribe = it.teamStore.subscribe(newUserId, newTeamId)
+         *         cleanUp(unsubscribe)
+         *   ```
+         */
+        trigger,
+      }
+    }
+
+    function watch(effect: WatchCallback<Unref<U>, Unref<U> | undefined>, options?: WatchOptions) {
+      const target = () => copy(mapper({ modules: _store as T, getters: _getters }))
       const unwatch = w(
         target as () => Unref<U>,
         effect as WatchCallback<Unref<U>, Unref<U> | undefined>,
         options
       )
       _unsubscribes.push(unwatch)
+
+      return {
+        /**
+         * [`watch`](https://github.com/vuejs/vue-next/blob/master/packages/runtime-core/src/apiWatch.ts#L89) function on vue3
+         * @example
+         *  ```ts
+         *  store
+         *    .on(({ modules: it }) => it.authStore.userId)
+         *    .watch((newId, oldId) => console.log)
+         *  ```
+         */
+        watch,
+      }
     }
 
     return {
@@ -205,6 +237,7 @@ export function inject<T>(
   name?: undefined
 ): T | undefined
 
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 export function inject<T = any>(key: any, type: any, name: any): T | undefined {
   if (type === 'module' && name) {
     return (
