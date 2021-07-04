@@ -1,1 +1,1 @@
-export declare function deepCopy<T>(target: T): T;
+export declare function copy<T>(target: T): T;
