@@ -4,20 +4,23 @@ import { FirebaseUser } from '../services/firebase.service'
 
 export type AuthStore = ReturnType<typeof createAuthStore>
 export const createAuthStore = () => {
-  const state = reactive<{ user: FirebaseUser }>({
+  const state = reactive<{ user: FirebaseUser; unsubscribe?: () => void }>({
     user: null,
   })
 
   const userId = computed(() => state.user?.uid ?? '')
 
-  let unsubscribe: () => void
   onMounted(() => {
-    unsubscribe = onAuthStateChanged((user) => {
+    state.unsubscribe = onAuthStateChanged((user) => {
       state.user = user
     })
   })
 
-  onUnmounted(() => unsubscribe?.())
+  onUnmounted(() => {
+    state.unsubscribe?.()
+    state.unsubscribe = undefined
+    state.user = null
+  })
 
   return {
     userId,
