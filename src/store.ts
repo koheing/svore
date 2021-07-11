@@ -48,26 +48,7 @@ export function defineStore<T extends Record<string, Module>, S = undefined>(
       getters: S extends undefined ? never : ComputedRef<S>
     }) => U
   ) {
-    let _predicate: ((newer: Unref<U>, older?: Unref<U>) => boolean) | null = null
-
-    function trigger(
-      action: (modules: T) => WatchCallback<Unref<U>, Unref<U>>,
-      options?: WatchOptions
-    ) {
-      const target = () => copy(mapper({ modules: _store as T, getters: _getters })) as Unref<U>
-      const unwatch = w(
-        target,
-        async (newer, older, cleanUp) => {
-          if (_predicate && !_predicate(newer, older)) return
-          await action(_store as T)(newer as Unref<U>, older as Unref<U>, cleanUp)
-        },
-        options
-      )
-      _unsubscribes.push(unwatch)
-    }
-
     function filter(predicate: (newer: Unref<U>, older: Unref<U>) => boolean) {
-      _predicate = predicate as (newer: Unref<U>, older?: Unref<U>) => boolean
       return {
         /**
          * Trigger other action, like `dispatch` on Vuex
@@ -86,7 +67,16 @@ export function defineStore<T extends Record<string, Module>, S = undefined>(
          *         cleanUp(unsubscribe)
          *   ```
          */
-        trigger,
+        trigger: (
+          action: (modules: T) => WatchCallback<Unref<U>, Unref<U>>,
+          options?: WatchOptions
+        ) =>
+          _trigger(
+            mapper,
+            action,
+            options,
+            predicate as (newer: Unref<U>, older?: Unref<U>) => boolean
+          ),
       }
     }
 
@@ -118,7 +108,10 @@ export function defineStore<T extends Record<string, Module>, S = undefined>(
        *         cleanUp(unsubscribe)
        *   ```
        */
-      trigger,
+      trigger: (
+        action: (modules: T) => WatchCallback<Unref<U>, Unref<U>>,
+        options?: WatchOptions
+      ) => _trigger(mapper, action, options),
       /**
        * Filter before trigger
        * @example
@@ -149,6 +142,30 @@ export function defineStore<T extends Record<string, Module>, S = undefined>(
   function unwatchAll(): void {
     _unsubscribes.forEach((unsubscribe) => unsubscribe())
     _unsubscribes = []
+  }
+
+  function _trigger<U>(
+    mapper: ({
+      modules,
+      getters,
+    }: {
+      modules: T
+      getters: S extends undefined ? never : ComputedRef<S>
+    }) => U,
+    action: (modules: T) => WatchCallback<Unref<U>, Unref<U>>,
+    options?: WatchOptions,
+    filter?: (newer: Unref<U>, older?: Unref<U>) => boolean
+  ) {
+    const target = () => copy(mapper({ modules: _store as T, getters: _getters })) as Unref<U>
+    const unwatch = w(
+      target,
+      async (newer, older, cleanUp) => {
+        if (filter && !filter(newer, older)) return
+        await action(_store as T)(newer as Unref<U>, older as Unref<U>, cleanUp)
+      },
+      options
+    )
+    _unsubscribes.push(unwatch)
   }
 
   return {
